@@ -15,26 +15,37 @@ namespace ParkApi.Controllers
       _db = db;
     }
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Park>>> Get(string name, string designation, string city, string state, bool free, bool campground, int year, int over100)
+    public async Task<ActionResult<IEnumerable<Park>>> Get(string name, string designation, string city, string state, bool free, bool campground, int over100years)
     {
-      IQueryable<Park> q = _db.Parks.AsQueryable()
-      .Where(entry => name == null || entry.Name.Contains(name))
-      .Where(entry => designation == null || entry.Designation == designation)
-      .Where(entry => city == null || entry.City == city)
-      .Where(entry => state == null || entry.State == state);
-
-
-      // .Where(entry => year == 0 || entry.YearEst == year)
-      // .Where(entry => over100 == 0 || (DateTime.Now.Year - entry.YearEst) >= 100);
-
-      // if (free != true)
-      // {
-      //   q = q.Where(entry => entry.EntryFee == free);
-      // }
-      // if (campground != false)
-      // {
-      //   q = q.Where(entry => entry.Campground == campground);
-      // }
+      IQueryable<Park> q = _db.Parks.AsQueryable();
+      if (name != null)
+      {
+        q = q.Where(e => e.Name.Contains(name));
+      }
+      if (designation != null)
+      {
+        q = q.Where(e => e.Designation == designation);
+      }
+      if (city != null)
+      {
+        q = q.Where(e => e.City == city);
+      }
+      if (state != null)
+      {
+        q = q.Where(e => e.State == state);
+      }
+      if (free == true)
+      {
+        q = q.Where(e => e.EntryFee == false);
+      }
+      if (campground == true)
+      {
+        q = q.Where(e => e.Campground == campground);
+      }
+      if (over100years > 0)
+      {
+        q = q.Where(e => (DateTime.Now.Year - e.YearEst) >= 100);
+      }
 
       return await q.ToListAsync();
     }
