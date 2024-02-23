@@ -15,9 +15,28 @@ namespace ParkApi.Controllers
       _db = db;
     }
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Park>>> Get()
+    public async Task<ActionResult<IEnumerable<Park>>> Get(string name, string designation, string city, string state, bool free, bool campground, int year, int over100)
     {
-      return await _db.Parks.ToListAsync();
+      IQueryable<Park> q = _db.Parks.AsQueryable()
+      .Where(entry => name == null || entry.Name.Contains(name))
+      .Where(entry => designation == null || entry.Designation == designation)
+      .Where(entry => city == null || entry.City == city)
+      .Where(entry => state == null || entry.State == state);
+
+
+      // .Where(entry => year == 0 || entry.YearEst == year)
+      // .Where(entry => over100 == 0 || (DateTime.Now.Year - entry.YearEst) >= 100);
+
+      // if (free != true)
+      // {
+      //   q = q.Where(entry => entry.EntryFee == free);
+      // }
+      // if (campground != false)
+      // {
+      //   q = q.Where(entry => entry.Campground == campground);
+      // }
+
+      return await q.ToListAsync();
     }
     [HttpGet("{id}")]
     public async Task<ActionResult<Park>> GetPark(int id)
