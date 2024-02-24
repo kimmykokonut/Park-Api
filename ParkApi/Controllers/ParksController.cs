@@ -108,12 +108,8 @@ namespace ParkApi.Controllers
         {
           return NotFound();
         }
-        patchDoc.ApplyTo(parkToEdit, ModelState);
+        patchDoc.ApplyTo(parkToEdit);
 
-        if (!ModelState.IsValid)
-        {
-          return BadRequest(ModelState);
-        }
         try
         {
           await _db.SaveChangesAsync();
@@ -133,7 +129,7 @@ namespace ParkApi.Controllers
       }
       else
       {
-        return BadRequest(ModelState);
+        return BadRequest();
       }
     }
     [HttpDelete("{id}")]
