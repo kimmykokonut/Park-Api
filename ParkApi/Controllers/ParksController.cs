@@ -157,9 +157,9 @@ namespace ParkApi.Controllers
       return NoContent();
     }
 
-    [HttpGet("V2")]
+    [HttpGet]
     [ApiVersion(2.0)]
-    public async Task<ActionResult<IEnumerable<Park>>> GetV2(string name, string designation, string city, string state, bool free, bool campground, int pageNumber = 1, int pageSize = 10)
+    public async Task<ActionResult<IEnumerable<Park>>> GetV2(string name, string designation, string city, string state, bool free, bool campground, int over100years, int pageNumber = 1, int pageSize = 10)
     {
       pageSize = Math.Min(pageSize, 100);
 
@@ -179,6 +179,10 @@ namespace ParkApi.Controllers
       if (state != null)
       {
         q = q.Where(e => e.State == state);
+      }
+      if (over100years > 0)
+      {
+        q = q.Where(e => (DateTime.Now.Year - e.YearEst) >= 100);
       }
       if (free == true)
       {
