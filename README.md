@@ -66,14 +66,15 @@
 ## 🌐 About the Project
 
 ### 📖 Description
-An API that functions as a park archive for state and federal parks in the United States.  It utilizes RESTful principles. The user is able to see the in-use version of the API when using Postman.  This is an independent project for Epicodus code school to demonstrate skills in building an API.
+An API that functions as a park archive for state and federal parks in the United States.  It utilizes RESTful principles and pagination. The user is able to see the in-use version of the API when using Postman.  This is an independent project for Epicodus code school to demonstrate skills in building an API.
 
-<!-- version control, pagination, and has integrated authentication to keep the API Read-Only for all users except administrators. -->
+<!-- version control, and has integrated authentication to keep the API Read-Only for all users except administrators. -->
 
 ### 🦠 Known Bugs
 
 * There was an issue with query parameters in ParksController when I tried to minimize code using terneray operators.  Reverting back to multiple if statements, it is now functional.
 * Can't delete readme lines 4-8 without losing formatting
+* In top of readme, it does not recognize the MIT license
 
 ### Stretch Goals
 * JWT Tokens
@@ -247,14 +248,14 @@ For more information or to see how CORS functions, see the [Microsoft documentat
 ### Note on Pagination
 The Park API returns a default of 10 results per page at a time, up to a maximum of 100.
 
-To modify this, use the query parameters `limit` and `start` to alter the response results displayed. The `limit` parameter will specify how many results will be displayed, and the `start` parameter will specify which element in the response the limit should start counting.
+To modify this, use the query parameters `pageNumber` and `pageSize` to alter the response results displayed. The `pageSize` parameter will specify how many results will be displayed per page (max 100), and the `pageNumber` parameter will specify which page of results to retrieve.
 
 #### Example Query
 ```
-https://localhost:5000/api/Parks/?name=glacier&limit=200&start=20
+https://localhost:5000/api/Parks?pageNumber=2&pageSize=3'
 ```
 
-To use default, _don't include_ `limit` and `start` or set them equal to zero.
+To use default, _don't include_ `pageNumber` and `pageSize` or set them equal to zero.
 
 ..........................................................................................
 

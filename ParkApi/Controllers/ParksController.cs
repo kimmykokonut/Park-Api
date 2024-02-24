@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkApi.Models;
 using Microsoft.AspNetCore.JsonPatch;
+using System.ComponentModel.DataAnnotations;
 
 namespace ParkApi.Controllers
 {
@@ -15,8 +16,10 @@ namespace ParkApi.Controllers
       _db = db;
     }
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Park>>> Get(string name, string designation, string city, string state, bool free, bool campground, int over100years)
+    public async Task<ActionResult<IEnumerable<Park>>> Get(string name, string designation, string city, string state, bool free, bool campground, int over100years, int pageNumber = 1, int pageSize = 10)
     {
+      pageSize = Math.Min(pageSize, 100);
+
       IQueryable<Park> q = _db.Parks.AsQueryable();
       if (name != null)
       {
@@ -46,8 +49,13 @@ namespace ParkApi.Controllers
       {
         q = q.Where(e => (DateTime.Now.Year - e.YearEst) >= 100);
       }
+      int totalItems = await q.CountAsync();
+      int totalPages = (int)Math.Ceiling((double)totalItems/ pageSize);
 
-      return await q.ToListAsync();
+      pageNumber = Math.Min(pageNumber, totalPages);
+      pageNumber = Math.Max(pageNumber, 1);
+
+      return await q.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
     }
     [HttpGet("{id}")]
     public async Task<ActionResult<Park>> GetPark(int id)
