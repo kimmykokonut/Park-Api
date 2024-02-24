@@ -22,7 +22,7 @@
             <img src="https://img.shields.io/github/issues/kimmykokonut/Park-Api?style=plastic">
         </a>
         ¨
-        <a href="https://github.com/kimmykokonut/Park-Api/LICENSE.txt">
+        <a href="https://github.com/kimmykokonut/Park-Api/blob/main/LICENSE">
             <img src="https://img.shields.io/github/license/kimmykokonut/Park-Api?color=orange&style=plastic">
         </a>
         ¨
