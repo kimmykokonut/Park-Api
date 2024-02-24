@@ -271,17 +271,17 @@ Base URL: `https://localhost:5000`
 
 #### HTTP Request Structure
 ```
-GET /api/{component}  
-POST /api/{component}  
-GET /api/{component}/{id} 
-PUT /api/{component}/{id} 
-PATCH /api/{component}/{id} 
-DELETE /api/{component}/{id} 
+GET /api/v{version:apiVersion}/{component}  (v1 or v2)
+POST /api/v1/{component}  
+GET /api/v1/{component}/{id} 
+PUT /api/v1/{component}/{id} 
+PATCH /api/v1/{component}/{id} 
+DELETE /api/v1/{component}/{id} 
 ```
 
 #### Example Query
 ```
-https://localhost:5000/api/Parks/3
+https://localhost:5000/api/v1/Parks/3
 ```
 
 #### Sample JSON Response
@@ -310,12 +310,12 @@ Access information on parks within the United States.
 
 #### HTTP Request
 ```
-GET /api/Parks   | Gets list of parks in database
-POST /api/Parks   | Creates new park object
-GET /api/Parks/{id}   | Gets park by id number
-PUT /api/Parks/{id}   | Edits entire park object
-PATCH /api/Parks/{id}   | Edits one property of park object
-DELETE /api/Parks/{id}   | Deletes park object by id
+GET /api/v{version:apiVersion}/Parks   | Gets list of parks in database
+POST /api/v1/Parks   | Creates new park object
+GET /api/v1/Parks/{id}   | Gets park by id number
+PUT /api/v1/Parks/{id}   | Edits entire park object
+PATCH /api/v1/Parks/{id}   | Edits one property of park object
+DELETE /api/v1/Parks/{id}   | Deletes park object by id
 ```
 
 #### Path Parameters
@@ -331,7 +331,7 @@ DELETE /api/Parks/{id}   | Deletes park object by id
 
 #### Example Query
 ```
-https://localhost:5000/api/Parks/?state=MT&over100years=1
+https://localhost:5000/api/v1/Parks/?state=MT&over100years=1
 ```
 
 #### Sample JSON Response
@@ -355,7 +355,7 @@ https://localhost:5000/api/Parks/?state=MT&over100years=1
 #### Example Post Action to add a park to the database
 POST request to:
 ```
-http://localhost:5000/api/Parks
+http://localhost:5000/api/v1/Parks
 ```
 with an object literal in the body of the API call: (Never include a parkId property, that value is set by the database)
 ```
@@ -378,7 +378,7 @@ with an object literal in the body of the API call: (Never include a parkId prop
 #### Example PATCH Request (edit 1 property of object)
 [learn more about Patch here](https://learn.microsoft.com/en-us/aspnet/core/web-api/jsonpatch?view=aspnetcore-8.0)
 ```
-https://localhost:5000/api/Parks/3
+https://localhost:5000/api/v1/Parks/3
 ```
 json request body
 ```
