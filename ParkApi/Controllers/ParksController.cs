@@ -2,12 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkApi.Models;
 using Microsoft.AspNetCore.JsonPatch;
-using System.ComponentModel.DataAnnotations;
+// using System.ComponentModel.DataAnnotations;
+using Asp.Versioning;
 
 namespace ParkApi.Controllers
 {
-  [Route("api/[controller]")]
   [ApiController]
+  [ApiVersion( 1.0 )]
+  [Route("api/v{version:apiVersion}/[controller]")]
   public class ParksController : ControllerBase
   {
     private readonly ParkApiContext _db;
@@ -57,6 +59,7 @@ namespace ParkApi.Controllers
 
       return await q.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
     }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Park>> GetPark(int id)
     {
@@ -154,7 +157,50 @@ namespace ParkApi.Controllers
       return NoContent();
     }
 
+    [HttpGet]
+    [ApiVersion(2.0)]
+    public async Task<ActionResult<IEnumerable<Park>>> GetV2(string name, string designation, string city, string state, bool free, bool campground, int over100years, int pageNumber = 1, int pageSize = 10)
+    {
+      pageSize = Math.Min(pageSize, 100);
 
+      IQueryable<Park> q = _db.Parks.AsQueryable();
+      if (name != null)
+      {
+        q = q.Where(e => e.Name.Contains(name));
+      }
+      if (designation != null)
+      {
+        q = q.Where(e => e.Designation == designation);
+      }
+      if (city != null)
+      {
+        q = q.Where(e => e.City == city);
+      }
+      if (state != null)
+      {
+        q = q.Where(e => e.State == state);
+      }
+      if (over100years > 0)
+      {
+        q = q.Where(e => (DateTime.Now.Year - e.YearEst) >= 100);
+      }
+      if (free == true)
+      {
+        q = q.Where(e => e.EntryFee == false);
+      }
+      if (campground == true)
+      {
+        q = q.Where(e => e.Campground == campground);
+      }
+      int totalItems = await q.CountAsync();
+      int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+      pageNumber = Math.Min(pageNumber, totalPages);
+      pageNumber = Math.Max(pageNumber, 1);
+
+      return await q.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+    }
 
   }
+
 }

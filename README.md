@@ -66,15 +66,16 @@
 ## 🌐 About the Project
 
 ### 📖 Description
-An API that functions as a park archive for state and federal parks in the United States.  It utilizes RESTful principles and pagination. The user is able to see the in-use version of the API when using Postman.  This is an independent project for Epicodus code school to demonstrate skills in building an API.
+An API that functions as a park archive for state and federal parks in the United States.  It utilizes RESTful principles and pagination. The user is able to see the in-use version of the API when using Postman.  This is an independent project for Epicodus code school to demonstrate skills in building an API.  Version control has been added but could be improved.
 
-<!-- version control, and has integrated authentication to keep the API Read-Only for all users except administrators. -->
+<!--  integrated authentication to keep the API Read-Only for all users except administrators. -->
 
 ### 🦠 Known Bugs
 
 * There was an issue with query parameters in ParksController when I tried to minimize code using terneray operators.  Reverting back to multiple if statements, it is now functional.
 * Can't delete readme lines 4-8 without losing formatting
 * In top of readme, it does not recognize the MIT license
+* The versioning set up right now allows all access for V1 and only Get-Parks for V2, but if I remove a query parameter from the V2 Get action, it is removed as an option in Swagger for both.  Perhaps this can be fixed with a new controller created just for V2, but it feels redundant than for each V1 api you still have to specify which version you want.
 
 ### Stretch Goals
 * JWT Tokens
@@ -229,6 +230,12 @@ Explore the API endpoints in Postman or a browser.
 ### Using Swagger Documentation 
 To explore the Park API with Swagger, launch the project using `dotnet run` with the Terminal or Powershell, and input the following URL into your browser: `http://localhost:5000/swagger`
 
+### Note on Versioning
+All endpoints work with Version 1. Version 2 is implemented for the Get Parks action, but the search parameters are currently the same.  With versioning implemented, you Must apply the version to the API call, in Swagger it is set as a query parameter field. In Postman, it must be in the url after api.  I will show future api calls with versioning implemented.
+```
+http://localhost:5000/api/v1/Parks
+```
+
 <!-- ### Using the JSON Web Token
 In order to be authorized to use the POST, PUT, DELETE functionality of the API, please authenticate yourself through Postman.
 * Open Postman and create a POST request using the URL: `http://localhost:5000/api/users/authenticate`
@@ -252,7 +259,7 @@ To modify this, use the query parameters `pageNumber` and `pageSize` to alter th
 
 #### Example Query
 ```
-https://localhost:5000/api/Parks?pageNumber=2&pageSize=3'
+https://localhost:5000/api/v1/Parks?pageNumber=2&pageSize=3'
 ```
 
 To use default, _don't include_ `pageNumber` and `pageSize` or set them equal to zero.
