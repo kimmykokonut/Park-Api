@@ -66,21 +66,18 @@
 ## 🌐 About the Project
 
 ### 📖 Description
-An API that functions as a park archive for state and federal parks in the United States.  It utilizes RESTful principles and pagination. The user is able to see the in-use version of the API when using Postman.  This is an independent project for Epicodus code school to demonstrate skills in building an API.  Version control has been added but could be improved.
-
-<!--  integrated authentication to keep the API Read-Only for all users except administrators. -->
+An API that functions as a park archive for state and federal parks in the United States.  It utilizes RESTful principles and pagination. The user is able to see the in-use version of the API when using Postman or Swagger.  This is an independent project for Epicodus code school to demonstrate skills in building an API.  Version control has been added but could be improved. JWT Token needed for POST, PUT and DELETE requests.
 
 ### 🦠 Known Bugs
 
 * There was an issue with query parameters in ParksController when I tried to minimize code using terneray operators.  Reverting back to multiple if statements, it is now functional.
 * Can't delete readme lines 4-8 without losing formatting
-* In top of readme, it does not recognize the MIT license
 * The versioning set up right now allows all access for V1 and only Get-Parks for V2, but if I remove a query parameter from the V2 Get action, it is removed as an option in Swagger for both.  Perhaps this can be fixed with a new controller created just for V2, but it feels redundant than for each V1 api you still have to specify which version you want.
 * JWT is set up and functional via Postman. In Swagger, you can register and sign in but currently receiving 401 unauthorized message when attempting api calls.
 
 ### Stretch Goals
-* JWT Tokens
 * CORS
+* Set up roles for authentication where users can only edit/delete items they have created and an admin with full CRUD access
 * For future UI: a weather api call to display current weather at selected park, a map api call to display park's location on a map
 
 ### 🛠 Built With
@@ -185,9 +182,14 @@ $ git push origin main
   "ConnectionStrings": {
     "DefaultConnection": "Server=localhost;Port=3306;database=[YOUR-DB-NAME];uid=[YOUR-USERNAME];pwd=[YOUR-PASSWORD];"
     }
+   },
+  "JWT": {
+    "ValidAudience": "audience",
+    "ValidIssuer": "issuer",
+    "Secret": "SecretPassword12" 
   }
   ```
- #### Log info that is relevant to ASP.NET Core adn EF Core in appsettings.Development.json
+ #### Log info that is relevant to ASP.NET Core and EF Core in appsettings.Development.json
 
  1) Create a new file in the ParkApi.Solution/ParkApi directory named `appsettings.Development.json`
   2) Add in the following code snippet to this file:
@@ -237,21 +239,32 @@ All endpoints work with Version 1. Version 2 is implemented for the Get Parks ac
 http://localhost:5000/api/v1/Parks
 ```
 
-<!-- ### Using the JSON Web Token
+### Using the JSON Web Token
+(Currently a bug in swagger with Authentication)
 In order to be authorized to use the POST, PUT, DELETE functionality of the API, please authenticate yourself through Postman.
-* Open Postman and create a POST request using the URL: `http://localhost:5000/api/users/authenticate`
+- REGISTER
+* Open Postman and create a POST request using the URL: `http://localhost:5000/Accounts/register`
 * Add the following query to the request as raw data in the Body tab:
 ```
 {
-    "UserName": "CoffeeAdmin",
-    "Password": "epicodus"
+    "email": "[YOUR-EMAIL]",
+    "userName": "[YOUR-USERNAME]",
+    "password": "[YOUR-PASSWORD]"
 }
 ```
-* The token will be generated in the response. Copy and paste it as the Token paramenter in the Authorization tab.
 
-### Note on CORS
-CORS is a W3C standard that allows a server to relax the same-origin policy. It is not a security feature, CORS relaxes security. It allows a server to explicitly allow some cross-origin requests while rejecting others. An API is not safer by allowing CORS.
-For more information or to see how CORS functions, see the [Microsoft documentation](https://docs.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-2.2#how-cors). -->
+- SIGN IN
+* Open Postman and create a POST request using the URL: `http://localhost:5000/Accounts/SignIn`
+* Add the following query to the request as raw data in the Body tab:
+```
+{
+    "email": "[YOUR-EMAIL]",
+    "password": "[YOUR-PASSWORD]"
+}
+```
+* The token will be generated in the response. 
+* In Postman, this will be the Auth tab next to the Headers, set the Type to "Bearer Token" and paste the Token parameter and make your POST, PUT and DELETE requests as explained below.
+(In swagger you will click on the padlock icon and paste the Bearer token to make your request - currently non functional)
 
 ### Note on Pagination
 The Park API returns a default of 10 results per page at a time, up to a maximum of 100.

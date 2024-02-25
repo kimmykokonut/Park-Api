@@ -4,5 +4,4 @@ namespace ParkApi.Models;
 
 public class ApplicationUser : IdentityUser
 {
-  
 }

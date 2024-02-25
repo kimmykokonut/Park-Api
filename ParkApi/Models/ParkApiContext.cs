@@ -15,7 +15,7 @@ public class ParkApiContext : IdentityDbContext<ApplicationUser>
   protected override void OnModelCreating(ModelBuilder builder)
   {
     base.OnModelCreating(builder);
-    
+
     builder.Entity<IdentityUserLogin<string>>(e =>
       e.HasKey(e => new { e.LoginProvider, e.ProviderKey }));
 

@@ -1,13 +1,11 @@
 using ParkApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Asp.Versioning;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
