@@ -242,7 +242,7 @@ http://localhost:5000/api/v1/Parks
 ### Using the JSON Web Token
 (Currently a bug in swagger with Authentication)
 In order to be authorized to use the POST, PUT, DELETE functionality of the API, please authenticate yourself through Postman.
-- REGISTER
+#### REGISTER
 * Open Postman and create a POST request using the URL: `http://localhost:5000/Accounts/register`
 * Add the following query to the request as raw data in the Body tab:
 ```
@@ -253,7 +253,7 @@ In order to be authorized to use the POST, PUT, DELETE functionality of the API,
 }
 ```
 
-- SIGN IN
+#### SIGN IN
 * Open Postman and create a POST request using the URL: `http://localhost:5000/Accounts/SignIn`
 * Add the following query to the request as raw data in the Body tab:
 ```
