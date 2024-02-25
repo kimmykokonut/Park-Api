@@ -2,14 +2,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkApi.Models;
 using Microsoft.AspNetCore.JsonPatch;
-// using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ParkApi.Controllers
 {
   [ApiController]
   [ApiVersion( 1.0 )]
   [Route("api/v{version:apiVersion}/[controller]")]
+  [Authorize]
   public class ParksController : ControllerBase
   {
     private readonly ParkApiContext _db;

@@ -76,6 +76,7 @@ An API that functions as a park archive for state and federal parks in the Unite
 * Can't delete readme lines 4-8 without losing formatting
 * In top of readme, it does not recognize the MIT license
 * The versioning set up right now allows all access for V1 and only Get-Parks for V2, but if I remove a query parameter from the V2 Get action, it is removed as an option in Swagger for both.  Perhaps this can be fixed with a new controller created just for V2, but it feels redundant than for each V1 api you still have to specify which version you want.
+* JWT is set up and functional via Postman. In Swagger, you can register and sign in but currently receiving 401 unauthorized message when attempting api calls.
 
 ### Stretch Goals
 * JWT Tokens
