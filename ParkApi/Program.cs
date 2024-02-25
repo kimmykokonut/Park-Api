@@ -2,12 +2,12 @@ using ParkApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Asp.Versioning;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllers()
-    .AddNewtonsoftJson();
 
 builder.Services.AddDbContext<ParkApiContext>(
     dbContextOptions => dbContextOptions
@@ -17,6 +17,33 @@ builder.Services.AddDbContext<ParkApiContext>(
             )
             )
         );
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ParkApiContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(opt =>
+{
+    opt.SaveToken = true;
+    opt.RequireHttpsMetadata = false;
+    opt.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+    };
+});
+
+builder.Services.AddControllers()
+    .AddNewtonsoftJson();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -38,10 +65,6 @@ builder.Services.AddSwaggerGen(c =>
         c.ResolveConflictingActions(c => c.Last());
 });
 
-// adddcors
-// add swag gen for jwc
-
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -53,7 +76,7 @@ else
 {
     app.UseHttpsRedirection();
 }
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
