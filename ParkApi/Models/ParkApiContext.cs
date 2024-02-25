@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace ParkApi.Models;
 
-public class ParkApiContext : DbContext
+public class ParkApiContext : IdentityDbContext<ApplicationUser>
 {
   public DbSet<Park> Parks { get; set; }
 
@@ -12,6 +14,11 @@ public class ParkApiContext : DbContext
 
   protected override void OnModelCreating(ModelBuilder builder)
   {
+    base.OnModelCreating(builder);
+
+    builder.Entity<IdentityUserLogin<string>>(e =>
+      e.HasKey(e => new { e.LoginProvider, e.ProviderKey }));
+
     builder.Entity<Park>()
       .HasData(
         new Park { ParkId = 1, Name = "Glacier National Park", Designation = "Federal", Description = "A showcase of melting glaciers, alpine meadows, carved valleys, and spectacular lakes. With over 700 miles of trails, Glacier is a paradise for adventurous visitors seeking wilderness steeped in human history. Relive the days of old through historic chalets, lodges, and the famous Going-to-the-Sun Road.", City = "West Glacier", State = "MT", WebUrl = "https://www.nps.gov/glac/index.htm", PhotoUrl = "https://roadtrippers.com/wp-content/uploads/2020/03/shutterstock_1141638494-1160x921.jpg", EntryFee = true, FeeType = "$35/day, $80/year", Campground = true, LatLong = "lat:48.6962778, long:-113.7178611", YearEst = 1910 },

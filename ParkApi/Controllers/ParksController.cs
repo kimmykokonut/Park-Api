@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ParkApi.Models;
 using Microsoft.AspNetCore.JsonPatch;
-// using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ParkApi.Controllers
 {
   [ApiController]
-  [ApiVersion( 1.0 )]
+  [ApiVersion(1.0)]
   [Route("api/v{version:apiVersion}/[controller]")]
   public class ParksController : ControllerBase
   {
@@ -52,7 +52,7 @@ namespace ParkApi.Controllers
         q = q.Where(e => (DateTime.Now.Year - e.YearEst) >= 100);
       }
       int totalItems = await q.CountAsync();
-      int totalPages = (int)Math.Ceiling((double)totalItems/ pageSize);
+      int totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
       pageNumber = Math.Min(pageNumber, totalPages);
       pageNumber = Math.Max(pageNumber, 1);
@@ -71,6 +71,8 @@ namespace ParkApi.Controllers
       }
       return park;
     }
+
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Park>> Post(Park park)
     {
@@ -78,6 +80,8 @@ namespace ParkApi.Controllers
       await _db.SaveChangesAsync();
       return CreatedAtAction(nameof(GetPark), new { id = park.ParkId }, park);
     }
+
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Park park)
     {
@@ -87,7 +91,7 @@ namespace ParkApi.Controllers
       }
       _db.Parks.Update(park);
 
-      try 
+      try
       {
         await _db.SaveChangesAsync();
       }
@@ -108,6 +112,8 @@ namespace ParkApi.Controllers
     {
       return _db.Parks.Any(e => e.ParkId == id);
     }
+
+    [Authorize]
     [HttpPatch("{id}")]
     public async Task<IActionResult> JsonPatchWithModelState(int id, [FromBody] JsonPatchDocument<Park> patchDoc)
     {
@@ -143,6 +149,8 @@ namespace ParkApi.Controllers
         return BadRequest();
       }
     }
+
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePark(int id)
     {
@@ -200,7 +208,5 @@ namespace ParkApi.Controllers
 
       return await q.Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
     }
-
   }
-
 }

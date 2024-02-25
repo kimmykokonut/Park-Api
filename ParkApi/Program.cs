@@ -2,12 +2,12 @@ using ParkApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Asp.Versioning;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddControllers()
-    .AddNewtonsoftJson();
 
 builder.Services.AddDbContext<ParkApiContext>(
     dbContextOptions => dbContextOptions
@@ -17,6 +17,33 @@ builder.Services.AddDbContext<ParkApiContext>(
             )
             )
         );
+
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<ParkApiContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(opt =>
+{
+    opt.SaveToken = true;
+    opt.RequireHttpsMetadata = false;
+    opt.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
+    };
+});
+
+builder.Services.AddControllers()
+    .AddNewtonsoftJson();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -34,13 +61,36 @@ builder.Services.AddApiVersioning(opt =>
 
 builder.Services.AddSwaggerGen(c =>
 {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "OG", Version = "v1 " });
-        c.ResolveConflictingActions(c => c.Last());
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "OG", Version = "v1 " });
+    c.ResolveConflictingActions(c => c.Last());
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    },
+                    Scheme = "oauth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header,
+                },
+                new List<string>()
+            }
+        });
 });
-
-// adddcors
-// add swag gen for jwc
-
 
 var app = builder.Build();
 
@@ -53,7 +103,7 @@ else
 {
     app.UseHttpsRedirection();
 }
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
